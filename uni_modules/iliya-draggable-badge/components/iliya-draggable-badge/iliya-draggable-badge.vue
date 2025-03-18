@@ -1,6 +1,6 @@
 <template>
 	<view class="iliya-draggable-badge" :style="{width:size+'px'}" :animation="showAnimation" v-if="number > 0">
-		<view class="badge" v-if="!showBoom" :style="{...badgeStyle}" :animation="animation" @touchstart="badgeTouchstart"
+		<view class="badge" v-if="!showBoom" :style="{...badgeStyle}" @touchstart="badgeTouchstart"
 			@touchmove="badgeTouchmove" @touchend="badgeTouchend">
 			<view class="badge-number" :style="{fontSize:size * 0.8 + 'px'}">
 				{{showNumber}}
@@ -69,7 +69,7 @@
 				moveing: false,
 				badgeTransform: 'translate()',
 				showAnimation: null,
-				animation: null,
+				transition: '',
 				showBoom: false
 			}
 		},
@@ -93,7 +93,7 @@
 					background: this.bgColor,
 					color: this.color,
 					transform: this.badgeTransform,
-					transition: !this.animation ? 'none !important' : ''
+					transition: this.transition
 				}
 			},
 			pointStyle() {
@@ -199,20 +199,18 @@
 			restore() {
 				let shakeX = this.initX - this.endX + (this.touchX - this.initX)
 				let shakeY = this.initY - this.endY + (this.touchY - this.initY)
-				if (shakeX > 40) shakeX = 40
-				if (shakeY > 40) shakeY = 40
-				if (shakeX < -40) shakeX = -40
-				if (shakeY < -40) shakeY = -40
-				const animation = uni.createAnimation({
-					duration: 100,
-					timingFunction: 'linear',
-				})
-				animation.translate(shakeX, shakeY).step().translate(0, 0).step()
-				this.animation = animation.export()
+				if (shakeX > 20) shakeX = 20
+				if (shakeY > 20) shakeY = 20
+				if (shakeX < -20) shakeX = -20
+				if (shakeY < -20) shakeY = -20
+				this.badgeTransform = `translate(${shakeX}px,${shakeY}px)`
+				this.transition = 'transform .1s linear'
 				setTimeout(() => {
-					this.badgeTransform = 'translate()'
-					this.animation = null
-				}, 150)
+					this.badgeTransform = `translate(0px,0px)`
+					setTimeout(() => {
+						this.transition = ''
+					}, 100)
+				}, 100)
 			}
 		}
 	}

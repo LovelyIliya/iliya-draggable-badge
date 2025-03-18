@@ -8,7 +8,7 @@
 	export default {
 		data() {
 			return {
-				number: 200
+				number: 20
 			}
 		},
 		onLoad() {
